@@ -16,24 +16,24 @@ SET KEY_PASSWORD=kasturi123
 SET STORE_PASSWORD=kasturi123
 
 :: =============================
-:: CREATE SAFE FOLDERS
+:: CREATE FOLDERS
 :: =============================
 echo Creating project and SDK folders...
-mkdir "%TWA_PROJECT%"
-mkdir "%ANDROID_SDK%"
+mkdir "%TWA_PROJECT%" >nul 2>&1
+mkdir "%ANDROID_SDK%" >nul 2>&1
 
 :: =============================
-:: INSTALL NODE.JS IF MISSING
+:: CHECK NODE.JS
 :: =============================
 where node >nul 2>&1
 IF %ERRORLEVEL% NEQ 0 (
-    echo Node.js not found. Please install Node.js manually from https://nodejs.org
+    echo Node.js not found. Please install from https://nodejs.org
     pause
     exit /b
 )
 
 :: =============================
-:: INSTALL JAVA JDK 17 IF MISSING
+:: CHECK JAVA
 :: =============================
 java -version >nul 2>&1
 IF %ERRORLEVEL% NEQ 0 (
@@ -43,7 +43,7 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 :: =============================
-:: INSTALL BUBBLEWRAP CLI IF MISSING
+:: INSTALL BUBBLEWRAP CLI
 :: =============================
 where bubblewrap >nul 2>&1
 IF %ERRORLEVEL% NEQ 0 (
@@ -52,15 +52,20 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 :: =============================
-:: SET ENVIRONMENT VARIABLES
+:: SET ENV VARIABLES
 :: =============================
-echo Setting environment variables...
 set BUBBLEWRAP_ANDROID_SDK=%ANDROID_SDK%
 set ANDROID_HOME=%ANDROID_SDK%
 set PATH=%BUBBLEWRAP_ANDROID_SDK%\tools\bin;%PATH%
 
 :: =============================
-:: INITIALIZE TWA PROJECT
+:: ACCEPT ANDROID SDK LICENSES (non-interactive)
+:: =============================
+echo Accepting Android SDK licenses...
+echo y| "%ANDROID_SDK%\tools\bin\sdkmanager.bat" --licenses >nul 2>&1
+
+:: =============================
+:: INITIALIZE TWA PROJECT (non-interactive)
 :: =============================
 echo Initializing Trusted Web Activity...
 cd /d "%TWA_PROJECT%"
@@ -75,17 +80,19 @@ bubblewrap init ^
  --keystore "%TWA_PROJECT%\%KEYSTORE_NAME%" ^
  --key-alias "%KEY_ALIAS%" ^
  --key-password "%KEY_PASSWORD%" ^
- --store-password "%STORE_PASSWORD%"
+ --store-password "%STORE_PASSWORD%" ^
+ --quiet
 
 :: =============================
 :: BUILD APK
 :: =============================
 echo Building APK...
-bubblewrap build
+bubblewrap build --quiet
 
 echo.
-echo ===========================
-echo DONE! APK GENERATED IN %TWA_PROJECT%\output\
-echo ===========================
+echo ===================================
+echo APK BUILD COMPLETE!
+echo Your APK is located at: %TWA_PROJECT%\output\app-release.apk
+echo ===================================
 pause
 ENDLOCAL
