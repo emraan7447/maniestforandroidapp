@@ -1,0 +1,23 @@
+{
+  "name": "Kasturi Foods",
+  "short_name": "Kasturi",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#FF6600",
+  "background_color": "#FFFFFF",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "description": "Kasturi Foods - Fresh and tasty foods delivered to you",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
